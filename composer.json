@@ -1,0 +1,23 @@
+{
+        "name": "atk14/sql-builder",
+        "type": "library",
+        "description": "Library for building SQL queries",
+        "keywords": [],
+        "homepage": "https://github.com/atk14/SqlBuilder",
+        "license": ["MIT"],
+        "authors": [
+                {
+                        "name": "ATK14 Development Team",
+                        "homepage": "https://github.com/orgs/atk14/people"
+                }
+        ],
+        "require": {
+                "php": ">=5.5.0"
+        },
+        "require-dev": {
+                "atk14/tester": "*"
+        },
+        "autoload": {
+                "classmap": ["src"]
+        }
+}
