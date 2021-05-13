@@ -48,7 +48,7 @@ class SqlValues {
 			}
 			next($this->fields);
 		}
-		$this->data[] = implode($str, ",");
+		$this->data[] = implode(",", $str);
 	}
 
 	function sql() {
