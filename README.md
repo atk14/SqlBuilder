@@ -1,8 +1,12 @@
 SqlBuilder
 ==========
 
+[![Build Status](https://travis-ci.com/atk14/SqlBuilder.svg?branch=master)](https://travis-ci.com/atk14/SqlBuilder)
+
 Usage
 -----
+
+TODO
 
 Installation
 ------------
