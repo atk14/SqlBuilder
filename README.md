@@ -26,4 +26,4 @@ Run tests:
 License
 -------
 
-LinkFinder is free software distributed [under the terms of the MIT license](http://www.opensource.org/licenses/mit-license)
+SqlBuilder is free software distributed [under the terms of the MIT license](http://www.opensource.org/licenses/mit-license)
