@@ -1,15 +1,15 @@
 <?php
 /***
- * Structured SQL Query. Each SqlConditions describes one table.
+ * Structured SQL Query. Each SqlTable describes one table.
  *
- * $sql = new SqlConditions('cards');
+ * $sql = new SqlTable('cards');
  * $sql->where('visible = 1);
  * $sql->where('visible = :visible', ':visible', true);
  * $sql->where('visible = :visible')->bind(':visible', true);
  * $sql->where('visible = :visible')->bind([':visible', true]);
  * $sql->join('products')->where('products.card_id = cards.id');
 
- * $sql = new SqlConditions('cards');
+ * $sql = new SqlTable('cards');
  * $sql->namedWhere('visible', 'visible = :visible')->bind(':visible', true);
  * $join = $sql->join('products p')->where('p.card_id = cards.id');
  * var_dump($sql->result()->select('id'));
@@ -36,7 +36,7 @@
  * "SELECT id FROM cards JOIN products p ON (p.card_id = cards.id AND not p.deleted) WHERE NOT (visible = :visible) LIMIT 5", [':visible'] => true
  **/
 
-class SqlConditions {
+class SqlTable {
 	function __construct($table=null, $where = [], $bind_ar = [], $options = []) {
 		if($table) {
 			$this->setTable($table);
@@ -58,9 +58,34 @@ class SqlConditions {
 		);
 	}
 
+	/***
+	 * Autodetection of the table name and table alias
+	 * It is not completely reliable, but sufficient for the purpose.
+	 */
 	function setTable($table) {
-			$this->table = $table;
-			$this->name = $this->parseTableName();
+		$this->table = trim($table);
+
+		# "(a JOIN b ON (....))" => "(a JOIN b"
+		if(substr($this->table, -1) == ')') {
+			$table = substr($this->table, 0, strrpos(strtolower($this->table), ' on ', -1));
+			$this->sqlTable = $this->table;
+		} else {
+			$table = $this->table;
+			$this->sqlTable = null;
+		}
+
+		#"blablabla JOIN b" => "b"
+		#"jakakolivtabulka alias" => "alias"
+		$pos = strrpos($table, ' ');
+		if($pos !== false) {
+			$this->name = substr($table, $pos+1);
+			if($this->sqlTable === null) {
+				$this->sqlTable = substr($table, 0, $pos);
+			}
+		} else {
+			$this->sqlTable = $table;
+			$this->name = $table;
+		}
 	}
 
 	function addCondition($condition) {
@@ -72,13 +97,13 @@ class SqlConditions {
 		$cond->where('visible = :visible', [ ':visible' => true ]);
 		$cond->where('visible = :visible', ':visible', true);
 
-		add named where condition (see SqlConditions::namedWhere)
+		add named where condition (see SqlTable::namedWhere)
 		$cond->where(['not_null_brand' => 'brand_id IS NOT NULL']);
 	 */
 	function where($where, $bind_ar = null, $bind_value=null) {
 		if(is_array($where)) {
 			$this->where = array_merge($this->where, $where);
-			$this->sattisfiedWhere = array_diff_key($this->sattisfiedWhere, array_filter($where, "is_string", ARRAY_FILTER_USE_KEY));
+			$this->sattisfiedWhere = array_diff_key($this->sattisfiedWhere, static::FilterNamedWhere($where));
 		} elseif($where) {
 			$this->where[] = $where;
 		}
@@ -133,7 +158,7 @@ class SqlConditions {
 				$where[$k] = "NOT ($v)";
 		}
 		if(isset($options['named_where_only']) && $options['named_where_only']) {
-			$where=array_filter($where, function($k) {return is_string($k);}, ARRAY_FILTER_USE_KEY);
+			$where=static::FilterNamedWhere($where);
 		}
 
 		if($options['add_where']) {
@@ -164,7 +189,7 @@ class SqlConditions {
 		$where = $this->resultWhere($options);
 		$sqlOptions = $options['sql_options'] + $this->sqlOptions;
 		$result = new SqlResult($this->table, $where, $this->bind, $sqlOptions);
-		
+
 		$options['add_where'] = null;
 		foreach($this->join as $join) {
 			$join->joinTo($result, $options);
@@ -196,7 +221,12 @@ class SqlConditions {
 		return $this->name;
 	}
 
-	/* Alias of table */
+	/* Sql expression for the table */
+	function getSqlTable() {
+		return $this->sqlTable;
+	}
+
+	/* Alias of the table */
 	function getTableName() {
 		return $this->name;
 	}
@@ -254,7 +284,7 @@ class SqlConditions {
 			}
 			return false;
 		}
-		return $this->active;
+		return $active;
 	}
 
 	/**
@@ -262,9 +292,9 @@ class SqlConditions {
 		$cond->join("cards c",'c.id = product.card_id');
 		$cond->join("(product_cards JOIN cards ON (product.id = product_cards.product_id)) pcc");
 	*/
-	function join($join, $where=null) {
+	function join($join, $where=null, $options=[]) {
 		if(is_string($join)) {
-			$join = new SqlConditions($join);
+			$join = new SqlTable($join, [], [], $options);
 		}
 		$name = $join->getName();
 		if(key_exists($name, $this->join)) {
@@ -314,28 +344,6 @@ class SqlConditions {
 		return $parent_result;
 	}
 
-	// INTERNAL METHODS
-	/** Extract alias of table from table expression. From join it extract last table alias
-	 * cards => cards
-	 * cards c => c
-	 * (category_cards cc join cards c ON (...)) => c
-	 */
-	function parseTableName() {
-		# "(a JOIN b ON (....))" => "(a JOIN b"
-		if(substr($this->table, -1) == ')') {
-			$table = substr($this->table, 0, strrpos(strtolower($this->table), ' on ', -1));
-		} else {
-			$table = $this->table;
-		}
-
-		#"blablabla JOIN b" => "b"
-		#"jakakolivtabulka alias" => "alias"
-		$pos = strrpos($table, ' ');
-		if($pos !== false) {
-			$table = substr($table, $pos+1);
-		}
-		return $table;
-	}
 
 	function __clone() {
 		$this->cloneJoinsFrom($this);
@@ -384,7 +392,7 @@ class SqlConditions {
 				'disable_where' => [],
 				'not_where' => [],
 				'join' => false,
-				'add_where' => [],		
+				'add_where' => [],
 				'sql_options' => [],  #options for query: limit, order....
 				'override_join' => [], #change join type for given table
 				'result_function' => $this->options['result_function']
@@ -412,7 +420,7 @@ class SqlConditions {
 	}
 
 	static $TableCounter=1;
-	function materialize($dbmole, $fields,$options) {
+	function materialize($dbmole, $fields,$options=[]) {
 		$options+= [
 			'table_name' => null,
 			'table_name_pattern' => 'materialized_query',
@@ -435,7 +443,7 @@ class SqlConditions {
 
 		$opts = $this->options;
 		unset($opts['result_function']);
-		$out = new SqlConditions("$tableName {$this->getTableName()}", [], [], $opts);
+		$out = new SqlTable("$tableName {$this->getTableName()}", [], [], $opts);
 		if($options['inherit']) {
 			$out->pattern = $this;
 		}
@@ -444,7 +452,7 @@ class SqlConditions {
 				'inherit' => $options['inherit'],
 				'only_names' =>  $options['copy_joins'],
 			]);
-			$out->sattisfiedWhere+=array_filter($out->where, "is_string", ARRAY_FILTER_USE_KEY);
+			$out->sattisfiedWhere+=static::FilterNamedWhere($out->where);
 
 			foreach($out->join as $join) {
 				if($join->active !== 'always') {
@@ -454,5 +462,17 @@ class SqlConditions {
 		}
 		$out->bind = $this->bind;
 		return $out;
+	}
+
+	/**
+	 * Filter the given array of where condition for the named ones: i.e. those with string keys
+	 **/
+	static function FilterNamedWhere($data) {
+		if(defined('ARRAY_FILTER_USE_KEY')) {
+			return array_filter($data, "is_string", ARRAY_FILTER_USE_KEY);
+		} else {
+			$keys = array_filter(array_keys($data), "is_string");
+			return array_intersect_key($data, array_flip($keys));
+		}
 	}
 }

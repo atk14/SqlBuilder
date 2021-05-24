@@ -1,10 +1,12 @@
 <?php
 /**
- * Result of SqlConditions. Usage:
+ * Result of SqlTable - flattenation of the joined tables to one object
+ * Usage:
  * $result = new SqlResult('cards', 'visible = :visible', [':visible' => true ],[ 'limit' =>10 ]);
  * $this->dbmole->selectRows($result->select('id'), $result->bind);
  * $this->dbmole->selectRows($result->select('id'), $result->bind);
  */
+
 class SqlResult {
 	function __construct($table='', $where='', $bind = [], $sqlOptions = []) {
 		$this->table = $table;
@@ -28,11 +30,15 @@ class SqlResult {
 		return 'SELECT EXISTS(' . $this->select($options) . ')';
 	}
 
-	function count($options=[]) {
+	function count($field='*', $options=[]) {
+		if(is_array($field)) {
+			$options=$field;
+			$field='*';
+		}
 		if(isset($this->sqlOptions['count_sql'])) {
 			return $this->sqlOptions['count_sql'];
 		}
-		return $this->select("COUNT(*)", $options);
+		return $this->select("COUNT($field)", $options);
 	}
 
 	function setCountSql($sql) {
@@ -45,6 +51,10 @@ class SqlResult {
 	 * >> SELECT id FROM cards WHERE visible
    */
 	function select($field = '*', $options = []) {
+		if(is_array($field)) {
+			$options=$field;
+			$field='*';
+		}
 		$where = $this->where;
 		if($where) {
 			$where = "WHERE $where";
@@ -70,11 +80,19 @@ class SqlResult {
 	 * SELECT f1,f2 FROM (<DISTINCTED QUERY>) _q(f1,f2,f3,f4,f5) ORDER BY 3,4,5
 	 * $ids = call_user_func_array([$dbmole,'selectIntoArray'], $result->distinctOnSelect());
 	 */
-	function distinctOnSelect($field = 'id', $sqlOptions = []) {
+	function distinctOnSelect($field = 'id', $distinct_on=null, $sqlOptions = []) {
+
+		if($distinct_on === null) {
+			$distinct_on = $field;
+		} elseif(is_array($distinct_on)) {
+			$sqlOptions = $distinct_on;
+			$distinct_on = $field;
+		};
+
 		$sqlOptions = $this->prepareSqlOptions($sqlOptions);
 		$orderObj = SqlJoinOrder::ToSqlJoinOrder($sqlOptions['order']);
 		if(!$orderObj->isOrdered()) {
-			$query = $this->select("distinct on ($field) $field");
+			$query = $this->select("distinct on ($distinct_on) $field");
 		} else {
 			#odstranime ASC DESC do separatniho pole
 			list($order_fields, $desc) = $orderObj->splitOptions();
@@ -83,7 +101,7 @@ class SqlResult {
 			// SELECT f1,f2 FROM (<DISTINCTED QUERY>) _q(f1,f2,f3,f4,f5) ORDER BY 3,4,5
 			//subquery fields
 			$sub_fields = $field . ',' . implode(',', $order_fields);
-			$flen=$this->countFields($field, $sqlOptions, 'fields_count');
+			$flen=static::_countFields($field, $sqlOptions, 'fields_count');
 			//aliases of the fields
 			$alias = range(1,$orderObj->fieldsCount() +$flen);
 			$alias = array_map(function ($v) {return "f$v";}, $alias);
@@ -93,14 +111,14 @@ class SqlResult {
 			$order = array_slice($alias, $flen);
 			$order = array_map(function($o, $d) {return $o . $d;}, $order, $desc);
 
-			$sqlOptions['order'] = $orderObj->prependOrder($field);
-			$query = $this->select("distinct on ($field) $sub_fields",
+			$sqlOptions['order'] = $orderObj->prependOrder($distinct_on);
+			$query = $this->select("distinct on ($distinct_on) $sub_fields",
 				['limit' => false, 'offset' => false] + $sqlOptions);
 			$order = implode(',', $order);
 			$alias = implode(',', $alias);
 			$query = "SELECT $fields FROM ($query) _q($alias) ORDER BY $order, $fields " . $this->limitOffset($sqlOptions);
 		}
-		return array($query, $this->bind);
+		return $query;
 	}
 
 	/***
@@ -108,7 +126,7 @@ class SqlResult {
 	 * Not reliable, so one can give the propper number of fields
 	 * in options of given name (see distinctOnSelect)
 	 */
-	function countFields($sql, $opts=[], $name=null) {
+	static function _countFields($sql, $opts=[], $name=null) {
 		if(isset($opts[$name]) && $opts[$name]) {
 			return $opts[$name];
 		}

@@ -6,8 +6,8 @@
  *  new SqlJoinOrder(['a','b','c']);
  *  new SqlJoinOrder('a,b,cards.c', 'JOIN cards');
  *  To be used with sqlResult:
- *  $sqlResult->select('id', ['order' => SqlJoinOrder('rank', 
- *															          'JOIN (SELECT rank FROM ranktable WHERE ...) order_table'
+ *  $sqlResult->select('id', ['order' => SqlJoinOrder('rank',
+ *                                                    'JOIN (SELECT rank FROM ranktable WHERE ...) order_table'
  **/
 
 class SqlJoinOrder {
@@ -32,7 +32,11 @@ class SqlJoinOrder {
 			array_unshift($this->array, $field);
 			$this->order = null;
 		} else {
-			$this->order = "$field,".$this->order;
+			if($this->order!=='') {
+				$this->order = "$field,".$this->order;
+			} else {
+				$this->order = $field;
+			}
 			$this->array = null;
 		}
 		return $this;
@@ -60,12 +64,12 @@ class SqlJoinOrder {
 	}
 
 	/***
-	 * new SqlJoinOrder('a,b DESC, c')->decomposeOptions()
-   * >> [ ['a', 'b', 'c' ], ['','DESC', ''] ]	 
-	 ***/	
+	 * new SqlJoinOrder('a,b DESC, c NULLS FIRST')->decomposeOptions()
+   * >> [ ['a', 'b', 'c' ], ['','DESC', 'NULLS FIRST'] ]
+	 ***/
 	function splitOptions() {
 			$order = $this->asArray();
-			$fields	= array_map(function ($v) { return preg_replace('/([^\s])\s+(ASC|DESC)(\s+NULLS\s+(FIRST|LAST))?\s*$/i','\1', $v); },  $order);
+			$fields = array_map(function ($v) { return preg_replace('/([^\s])\s+((ASC|DESC)(\s+|$))?(NULLS\s+(FIRST|LAST))?\s*$/i','\1', $v); },  $order);
 			$desc = array_map(function ($order, $field) {return substr($order,strlen($field));}, $order, $fields);
 			return [$fields, $desc];
 	}
@@ -79,7 +83,7 @@ class SqlJoinOrder {
 			$this->order = null;
 			$this->array = $new_order;
 		} else {
-			$this->order = $new_order;
+			$this->order = (string) $new_order;
 			$this->array = null;
 		}
 		return $this;
@@ -100,11 +104,17 @@ class SqlJoinOrder {
 
 	static function ReverseOrder($field) {
 		$nulls = '(\bNULLS\s+(FIRST|LAST))?';
-		$out = preg_replace("/\s*\bDESC\s*$nulls\s*$/i", ' ASC \1', $field);
-		if($out === $field) {
-			$out = preg_replace("/(\s*\bASC\s*)?$nulls\s*$/i", ' DESC \2', $field, 1);
+		if(!preg_match("/^(.*?)\s*(?:\b(DESC|ASC)\s*)?$nulls\s*$/i", $field, $matches)) {
+			return trim($field) . ' DESC';
 		}
-		return trim($out);
+		$asc = (count($matches)>2 && strtolower($matches[2]) === 'desc')?' ASC':' DESC';
+		if(count($matches) > 3) {
+			$nulls = ' NULLS ';
+			$nulls .= strtolower($matches[4]) === 'first' ? 'LAST':'FIRST';
+		} else {
+			$nulls = '';
+		}
+		return $matches[1] . $asc . $nulls;
 	}
 
 	static function SplitFieldsToArray($fields) {
@@ -121,12 +131,12 @@ class SqlJoinOrder {
 				case "'": if($fields[$i]=="'") $state=''; break;
 				case '"': if($fields[$i]=='"') $state=''; break;
 				default: switch($fields[$i]) {
-				case '"':	$state = '"'; break;
-				case "'":	$state = "'"; break;
+				case '"': $state = '"'; break;
+				case "'": $state = "'"; break;
 				case '(': $parenthesis +=1;break;
 				case ')': $parenthesis -=1;break;
 				case ',': if(!$parenthesis) {
-						$out[] = substr($fields,$start,$i-$start);
+						$out[] = trim(substr($fields,$start,$i-$start));
 						$start = $i+1;
 					};
 					break;
@@ -135,7 +145,7 @@ class SqlJoinOrder {
 			}
 		}
 
-		$out[] = substr($fields, $start);
+		$out[] = trim(substr($fields, $start));
 		return $out;
 	}
 
