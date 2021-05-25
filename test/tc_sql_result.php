@@ -45,6 +45,15 @@ class TcSqlResult extends TcBase {
 		$this->assertSqlEquals('SELECT count(*) FROM another_table', $rr->count([]));
 
 		$this->assertSqlEquals('SELECT EXISTS(SELECT * FROM cards WHERE id = 1 )', $r->exists());
+
+		$r2 = clone $rr;
+		$t = (new SqlTable('products'))->where('products.card_id = cards.id')->result();
+		$rr->join($t, 'LEFT JOIN');
+		$this->assertSqlEquals("SELECT * FROM cards LEFT JOIN products ON ((products.card_id = cards.id)) WHERE id = 1 LIMIT 2", $rr->select());
+		$r2->join($t, 'exists');
+		$this->assertSqlEquals("SELECT * FROM cards WHERE (id = 1) AND (EXISTS(SELECT * FROM products WHERE (products.card_id = cards.id) )) LIMIT 2", $r2->select());
+
+
 	}
 
 	function test_distinct_on() {

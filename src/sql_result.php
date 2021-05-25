@@ -199,12 +199,16 @@ class SqlResult {
 	 * > SELECT id, product.id FROM cards LEFT JOIN products ON ( cards.id = product.id )
 	 */
 	function join($child, $by='JOIN') {
-		if($child->join) {
-			$table = "({$child->table} {$child->join})";
+		if( $by === 'exists') {
+			$this->andWhere("EXISTS({$child->select('*')})");
 		} else {
-			$table = $child->table;
+			if($child->join) {
+				$table = "({$child->table} {$child->join})";
+			} else {
+				$table = $child->table;
+			}
+			$this->join .= "\n $by $table ON ({$child->where})";
 		}
-		$this->join .= "\n $by $table ON ({$child->where})";
 		$this->bind+=$child->bind;
 		return $this;
 	}
