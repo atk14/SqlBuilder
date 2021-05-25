@@ -127,6 +127,9 @@ class SqlTable {
 	function namedWhere($name, $where) {
 		if(key_exists($name, $this->sattisfiedWhere)) {
 			unset($this->sattisfiedWhere[$name]);
+			if($this->pattern) {
+				unset($this->pattern->sattisfiedWhere[$name]);
+			}
 		}
 		if($where === null) {
 			unset($this->where[$name]);
@@ -209,11 +212,21 @@ class SqlTable {
 	 */
 	function setSqlOptions($options) {
 		$this->sqlOptions=$options+$this->sqlOptions;
+		if($this->pattern) {
+			$this->pattern->setSqlOptions($options);
+		}
 	}
 
 	function setOrder($order) {
-	  if(is_object($order)) { $order = $order->getOrder(); };
-		$this->sqlOptions['order'] = $order;
+		if(is_object($order)) { $order = $order->getOrder(); };
+		$this->setOptionValue('order', $order);
+	}
+
+	function setOptionValue($name, $value) {
+		$this->sqlOptions[$name] = $value;
+		if($this->pattern) {
+			$this->pattern->sqlOptions[$name] = $value;
+		}
 	}
 
 	/* Name of the join - now same as alias of the table */
@@ -240,7 +253,7 @@ class SqlTable {
 	}
 
 	function setJoinBy($join) {
-		$this->options['join'] = $join;
+		$this->setOptionValue('join', $join);
 	}
 
 	/** Set whether the table will be joined to parent table
