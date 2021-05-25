@@ -61,10 +61,9 @@ class MaterializedSqlTable {
 
 	function materialize() {
 		$options = $this->materializeOptions;
-		if(is_callable($this->materializeOptions)) {
-			$materializeOptions=($this->materializeOptions)();
-		} else {
-			$materializeOptions = $this->materializeOptions;
+		$materializeOptions = $this->materializeOptions;
+		if(is_callable($materializeOptions)) {
+			$materializeOptions=$materializeOptions();
 		}
 		$this->object=$this->materialized=$this->table->materialize($this->dbmole, $materializeOptions['fields'], $materializeOptions);
 	}
