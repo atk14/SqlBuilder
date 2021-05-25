@@ -6,7 +6,8 @@ class TcSqlWhere extends TcBase {
 		$this->assertTrue($w->isEmpty());
 		$ww= clone $w;
 		$this->assertEquals('FALSE', $ww->not());
-		$this->assertEquals('1=1', (string) (clone $w)->or('1=1'));
+		$clone = clone $w;
+		$this->assertEquals('1=1', (string) $clone->or('1=1'));
 		$ww= clone $w;
 		$this->assertEquals('TRUE', $ww->or('1=1', true));
 		$w->and('id = 1');
