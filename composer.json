@@ -12,11 +12,11 @@
                 }
         ],
         "require": {
-                "php": ">=5.5.0",
-                "atk14/dbmole": "^1.1"
+                "php": ">=5.5.0"
         },
         "require-dev": {
-                "atk14/tester": "*"
+                "atk14/tester": "*",
+                "atk14/dbmole": "^1.1"
         },
         "autoload": {
                 "classmap": ["src"]
