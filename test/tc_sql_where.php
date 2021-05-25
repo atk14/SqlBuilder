@@ -4,9 +4,11 @@ class TcSqlWhere extends TcBase {
 	function test() {
 		$w = new SqlWhere();
 		$this->assertTrue($w->isEmpty());
-		$this->assertEquals('FALSE', (clone $w)->not());
+		$ww= clone $w;
+		$this->assertEquals('FALSE', $ww->not());
 		$this->assertEquals('1=1', (string) (clone $w)->or('1=1'));
-		$this->assertEquals('TRUE', (clone $w)->or('1=1', true));
+		$ww= clone $w;
+		$this->assertEquals('TRUE', $ww->or('1=1', true));
 		$w->and('id = 1');
 		$this->assertFalse($w->isEmpty());
 		$this->assertEquals('id = 1', (string) $w);
