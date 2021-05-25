@@ -96,7 +96,7 @@ class FieldsUtils {
 				$field = preg_replace('/\s*(?:NOT|-)\s*(.*)/','\1', $field);
 			}
 			$field = trim($field);
-			if(!preg_match("/^[a-z0-9_]+(\.[a-z0-9_])*$/i", $field)) {
+			if(!preg_match("/^[a-z0-9_]+(\.[a-z0-9_]+)*$/i", $field)) {
 				return null;
 			}
 			return $field;

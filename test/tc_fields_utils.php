@@ -77,6 +77,7 @@ class TcFieldsUtils extends TcBase {
 	function data_strip_field() {
 		return array_chunk([
 			'a', 'a',
+			'aa.bb', 'aa.bb',
 			'NOT a', 'a',
 			'NOT a DESC', 'a',
 			'fce(A0_1) NULLS FIRST', 'A0_1',
