@@ -34,6 +34,9 @@ class TcSqlJoinOrder extends TcBase {
 		$o = new SqlJoinOrder("a, b ASC, c DESC NULLS LAST");
 		$this->assertEquals("a DESC, b DESC, c ASC NULLS FIRST", $o->reversed()->asString());
 		$this->assertEquals([['a', 'b', 'c'], ['',' ASC',' DESC NULLS LAST']], $o->splitOptions());
+		$this->assertEquals([['a', 'b', 'c'], [' DESC',' DESC',' ASC NULLS FIRST']],
+										    SqlJoinOrder::SplitOptionsFrom('a DESC, b DESC, c ASC NULLS FIRST'));
+
 		$o = new SqlJoinOrder("aaa, b - ASCNULLSFIRST");
 		$this->assertEquals("aaa DESC, b - ASCNULLSFIRST DESC", $o->reversed()->asString());
 

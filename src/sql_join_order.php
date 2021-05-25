@@ -64,11 +64,21 @@ class SqlJoinOrder {
 	}
 
 	/***
-	 * new SqlJoinOrder('a,b DESC, c NULLS FIRST')->decomposeOptions()
+	 * new SqlJoinOrder('a,b DESC, c NULLS FIRST')->splitOptions()
    * >> [ ['a', 'b', 'c' ], ['','DESC', 'NULLS FIRST'] ]
 	 ***/
 	function splitOptions() {
-			$order = $this->asArray();
+		return static::SplitOptionsFrom($this->asArray());
+	}
+
+	/***
+	 * SqlJoinOrder::SplitOptionsFrom('a, b DESC, c NULLS FIRST');
+   * >> [ ['a', 'b', 'c' ], ['','DESC', 'NULLS FIRST'] ]
+	 ***/
+	static function splitOptionsFrom($order) {
+			if(!is_array($order)) {
+				$order=static::SplitFieldsToArray($order);
+			}
 			$fields = array_map(function ($v) { return preg_replace('/([^\s])\s+((ASC|DESC)(\s+|$))?(NULLS\s+(FIRST|LAST))?\s*$/i','\1', $v); },  $order);
 			$desc = array_map(function ($order, $field) {return substr($order,strlen($field));}, $order, $fields);
 			return [$fields, $desc];
