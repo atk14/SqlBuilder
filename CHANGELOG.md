@@ -9,7 +9,8 @@ All notable changes to SqlBuilder will be documented in this file.
 
 ## [2.0] - 2021-05-24
 
-- Class renamed: SqlConditions -> SqlTable. BC BREAK!
+- Class renamed: SqlConditions -> SqlTable BC BREAK!
+- Return value changed: SqlResult->distinctOnSelect BC BREAK!
 
 ## [1.1] - 2021-05-14
 
