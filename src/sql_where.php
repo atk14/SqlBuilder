@@ -60,8 +60,8 @@ class BaseSqlWhere {
 }
 
 if(PHP_VERSION_ID >= 70000):
-	#syntax not supported for PHP 5.x
-	require_once(__DIR__ .'/sql_where_7.0.php');
+	#methods, that can be defined only in PHP with version at least 7.0
+	require_once(__DIR__ .'/sql_where.inc');
 else:
 
 class SqlWhere extends BaseSqlWhere {

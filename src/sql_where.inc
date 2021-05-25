@@ -1,4 +1,8 @@
 <?php
+/**
+ * These methods are syntactically wrong in PHP 5.0 due their names
+ * Thus, they are defined in a separate file and included if the PHP version allows
+ **/
 
 class SqlWhere extends BaseSqlWhere {
 	function and($with) {
