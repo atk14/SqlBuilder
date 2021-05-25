@@ -2,7 +2,7 @@
 class TcSqlWhere extends TcBase {
 
 	function test() {
-		if(PHP_VERSION_ID > 7) {
+		if(PHP_VERSION_ID > 70000) {
 			$data = [['and', 'or'], ['andWith', 'orWith']];
 		} else {
 			$data = [['andWith', 'orWith']];

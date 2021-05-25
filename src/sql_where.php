@@ -59,7 +59,7 @@ class BaseSqlWhere {
 	}
 }
 
-if(PHP_VERSION_ID >= 7):
+if(PHP_VERSION_ID >= 70000):
 	#syntax not supported for PHP 5.x
 	require_once(__DIR__ .'/sql_where_7.0.php');
 else:
