@@ -60,17 +60,8 @@ class BaseSqlWhere {
 }
 
 if(PHP_VERSION_ID >= 7):
-
-class SqlWhere extends BaseSqlWhere {
-	function and($with) {
-		return $this->andWith($with);
-	}
-
-	function or($with, $undefined=false) {
-		return $this->orWith($with, $undefined);
-	}
-}
-
+	#syntax not supported for PHP 5.x
+	require_once(__DIR__ .'/sql_where_7.0.php');
 else:
 
 class SqlWhere extends BaseSqlWhere {
