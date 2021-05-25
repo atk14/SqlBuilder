@@ -67,6 +67,10 @@ class SqlResult {
 		return $this->_bindQuery("SELECT {$field} \n FROM {$this->table} {$join} \n $where {$this->_tail($options)}");
 	}
 
+	function tableString() {
+		return "{$this->table} {$this->join}";
+	}
+
 	function _joinWithOrderJoin(&$sqlOptions) {
 		$sqlOptions = $this->prepareSqlOptions($sqlOptions);
 		$join = $this->join;

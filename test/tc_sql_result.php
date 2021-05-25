@@ -50,8 +50,10 @@ class TcSqlResult extends TcBase {
 		$t = (new SqlTable('products'))->where('products.card_id = cards.id')->result();
 		$rr->join($t, 'LEFT JOIN');
 		$this->assertSqlEquals("SELECT * FROM cards LEFT JOIN products ON ((products.card_id = cards.id)) WHERE id = 1 LIMIT 2", $rr->select());
+		$this->assertSqlEquals("cards LEFT JOIN products ON ((products.card_id = cards.id))", $rr->tableString());
 		$r2->join($t, 'exists');
 		$this->assertSqlEquals("SELECT * FROM cards WHERE (id = 1) AND (EXISTS(SELECT * FROM products WHERE (products.card_id = cards.id) )) LIMIT 2", $r2->select());
+		$this->assertSqlEquals("cards", $r2->tableString());
 
 
 	}
