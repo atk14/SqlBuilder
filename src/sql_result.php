@@ -27,7 +27,11 @@ class SqlResult {
 		];
 
 	function exists($options=[]) {
-		return 'SELECT EXISTS(' . $this->select($options) . ')';
+		return $this->_bindQuery('SELECT EXISTS(' . $this->select($options) . ')');
+	}
+
+	function _bindQuery($sql) {
+		return new SqlBindQuery($sql, $this->bind);
 	}
 
 	function count($field='*', $options=[]) {
@@ -60,7 +64,7 @@ class SqlResult {
 			$where = "WHERE $where";
 		}
 		$join = $this->_joinWithOrderJoin($options);
-		return "SELECT {$field} \n FROM {$this->table} {$join} \n $where {$this->_tail($options)}";
+		return $this->_bindQuery("SELECT {$field} \n FROM {$this->table} {$join} \n $where {$this->_tail($options)}");
 	}
 
 	function _joinWithOrderJoin(&$sqlOptions) {
@@ -118,7 +122,7 @@ class SqlResult {
 			$alias = implode(',', $alias);
 			$query = "SELECT $fields FROM ($query) _q($alias) ORDER BY $order, $fields " . $this->limitOffset($sqlOptions);
 		}
-		return $query;
+		return $this->_bindQuery($query);
 	}
 
 	/***
