@@ -98,5 +98,17 @@ class FieldsUtils {
 			return trim($field);
 	}
 
+	/***
+	 * StripField('NOT fce(X), Y DESC')
+	 * > [ X,Y ]
+	 * Not reliable, just a fast guess
+   **/
+	static function StripFields($fields) {
+		if(!is_array($fields)) {
+        $fields=static::SplitFieldsToArray($fields);
+		}
+		return array_map(['\SqlBuilder\FieldsUtils','StripField'], $fields);
+	}
+
 }
 }

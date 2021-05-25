@@ -89,4 +89,21 @@ class TcFieldsUtils extends TcBase {
 	function test_strip_field($data, $result) {
 		$this->assertEquals($result, FieldsUtils::StripField($result));
 	}
+
+	function data_strip_fields() {
+		return array_chunk([
+			'a', ['a'],
+			'NOT a, b', ['a', 'b'],
+			'NOT a DESC, (a + b)', ['a', 'a + b'],
+			'fce(a) NULLS FIRST,c,d,e', ['a','c','d','e'],
+			'fce1(fce2(axx)) ASC', ['axx']
+		], 2);
+	}
+	/**
+	 * @dataProvider data_strip_fields
+	 **/
+	function test_strip_fields($data, $result) {
+		$this->assertEquals($result, FieldsUtils::StripFields($result));
+	}
+
 }
