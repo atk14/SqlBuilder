@@ -85,17 +85,21 @@ class FieldsUtils {
 	/***
 	 * StripField('NOT fce(X)')
 	 * > X
-	 * Not reliable, just a fast guess
+	 * Not reliable, just a fast guess. If the field is more complex, the function returns null.
    **/
 	static function StripField($field) {
 			$base = self::SplitOrderOptionsFromField($field);
 			$old = '';
 			while($old !== $field) {
 				$old = $field;
-				$field = preg_replace('/^\s*[a-zA-Z0-9_]*\s*\(\s*(.*)\s*\)\s*$/', '\1', $field);
+				$field = preg_replace('/^\s*[a-z0-9_]*\s*\(\s*(.*)\s*\)\s*$/i', '\1', $field);
 				$field = preg_replace('/\s*(?:NOT|-)\s*(.*)/','\1', $field);
 			}
-			return trim($field);
+			$field = trim($field);
+			if(!preg_match("/^[a-z0-9_]+(\.[a-z0-9_])*$/i", $field)) {
+				return null;
+			}
+			return $field;
 	}
 
 	/***
@@ -107,7 +111,7 @@ class FieldsUtils {
 		if(!is_array($fields)) {
         $fields=static::SplitFieldsToArray($fields);
 		}
-		return array_map(['\SqlBuilder\FieldsUtils','StripField'], $fields);
+		return array_filter(array_map(['\SqlBuilder\FieldsUtils','StripField'], $fields));
 	}
 
 }

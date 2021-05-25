@@ -79,8 +79,10 @@ class TcFieldsUtils extends TcBase {
 			'a', 'a',
 			'NOT a', 'a',
 			'NOT a DESC', 'a',
-			'fce(a) NULLS FIRST', 'a',
-			'fce1(fce2(axx)) ASC', 'axx'
+			'fce(A0_1) NULLS FIRST', 'A0_1',
+			'fce1(fce2(axx)) ASC', 'axx',
+			'fce(a,b)', null,
+			"'a'", null,
 		], 2);
 	}
 	/**
@@ -94,8 +96,8 @@ class TcFieldsUtils extends TcBase {
 		return array_chunk([
 			'a', ['a'],
 			'NOT a, b', ['a', 'b'],
-			'NOT a DESC, (a + b)', ['a', 'a + b'],
-			'fce(a) NULLS FIRST,c,d,e', ['a','c','d','e'],
+			'NOT a DESC, (a + b)', ['a'],
+			'fce(a) NULLS FIRST,fce(c,d),d,e', ['a','d','e'],
 			'fce1(fce2(axx)) ASC', ['axx']
 		], 2);
 	}
