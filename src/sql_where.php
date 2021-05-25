@@ -1,6 +1,6 @@
 <?php
 
-class SqlWhere {
+class BaseSqlWhere {
 	function __construct($where='') {
 		$this->where = $where;
 	}
@@ -25,7 +25,11 @@ class SqlWhere {
 		return $this->_undefined($this->where);
 	}
 
-	function and($with) {
+	function __toString() {
+		return $this->where;
+	}
+
+	function andWith($with) {
 		if($this->_undefined($with)) return $this;
 		if($this->isEmpty()) return $this->setWhere($with);
 		return $this->setWhere("({$this->where}) AND ({$with})");
@@ -35,9 +39,9 @@ class SqlWhere {
 	 * Result $where is ({$this->where}) OR ($with)
 	 * If one of the "sided" is empty and $undefined is True,
 	 * the result is TRUE (i.e. always satisfied). Otherwise,
-	 * the result is just the "nonempty side". 
-   **/	 
-	function or($with, $undefined=false) {
+	 * the result is just the "nonempty side".
+   **/
+	function orWith($with, $undefined=false) {
 		if($this->_undefined($with)) {
 			if($undefined) {
 				$this->setWhere('TRUE');
@@ -53,9 +57,23 @@ class SqlWhere {
 		}
 		return $this->setWhere("({$this->where}) OR ({$with})");
 	}
+}
 
-	function __toString() {
-		return $this->where;
+if(PHP_VERSION_ID >= 7):
+
+class SqlWhere extends BaseSqlWhere {
+	function and($with) {
+		return $this->andWith($with);
 	}
 
+	function or($with, $undefined=false) {
+		return $this->orWith($with, $undefined);
+	}
 }
+
+else:
+
+class SqlWhere extends BaseSqlWhere {
+}
+
+endif;
