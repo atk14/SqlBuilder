@@ -1,4 +1,5 @@
 <?php
+namespace SqlBuilder {
 
 /**
  *  Class, that holds order for a given table, possibly with a join clause:
@@ -41,13 +42,14 @@ class SqlJoinOrder {
 		}
 		return $this;
 	}
+
 	/**
 	 *  Return order fields as array
 	 **/
 	function asArray() {
 		$this->_handle_reverse();
 		if($this->array === null) {
-			$this->array = static::SplitFieldsToArray($this->order);
+			$this->array = FieldsUtils::SplitFieldsToArray($this->order);
 		}
 		return $this->array;
 	}
@@ -68,20 +70,7 @@ class SqlJoinOrder {
    * >> [ ['a', 'b', 'c' ], ['','DESC', 'NULLS FIRST'] ]
 	 ***/
 	function splitOptions() {
-		return static::SplitOptionsFrom($this->asArray());
-	}
-
-	/***
-	 * SqlJoinOrder::SplitOptionsFrom('a, b DESC, c NULLS FIRST');
-   * >> [ ['a', 'b', 'c' ], ['','DESC', 'NULLS FIRST'] ]
-	 ***/
-	static function splitOptionsFrom($order) {
-			if(!is_array($order)) {
-				$order=static::SplitFieldsToArray($order);
-			}
-			$fields = array_map(function ($v) { return preg_replace('/([^\s])\s+((ASC|DESC)(\s+|$))?(NULLS\s+(FIRST|LAST))?\s*$/i','\1', $v); },  $order);
-			$desc = array_map(function ($order, $field) {return substr($order,strlen($field));}, $order, $fields);
-			return [$fields, $desc];
+		return FieldsUtils::SplitOrderOptionsFromFields($this->asArray());
 	}
 
 	function fieldsCount() {
@@ -107,57 +96,10 @@ class SqlJoinOrder {
 		if($this->reversed) {
 			$this->reversed = false;
 			$fields = $this->asArray();
-			$this->array = array_map([$this, 'ReverseOrder'], $fields);
+			$this->array = array_map(['\SqlBuilder\FieldsUtils', 'ReverseOrder'], $fields);
 			$this->order = null;
 		}
 	}
 
-	static function ReverseOrder($field) {
-		$nulls = '(\bNULLS\s+(FIRST|LAST))?';
-		if(!preg_match("/^(.*?)\s*(?:\b(DESC|ASC)\s*)?$nulls\s*$/i", $field, $matches)) {
-			return trim($field) . ' DESC';
-		}
-		$asc = (count($matches)>2 && strtolower($matches[2]) === 'desc')?' ASC':' DESC';
-		if(count($matches) > 3) {
-			$nulls = ' NULLS ';
-			$nulls .= strtolower($matches[4]) === 'first' ? 'LAST':'FIRST';
-		} else {
-			$nulls = '';
-		}
-		return $matches[1] . $asc . $nulls;
-	}
-
-	static function SplitFieldsToArray($fields) {
-		$fields = trim($fields);
-		if($fields=='') return [];
-		$out = [];
-		$start = 0;
-		$len = strlen($fields);
-		$state = null;
-		$parenthesis = 0;
-
-		for($i=0;$i<strlen($fields);$i++) {
-			switch($state) {
-				case "'": if($fields[$i]=="'") $state=''; break;
-				case '"': if($fields[$i]=='"') $state=''; break;
-				default: switch($fields[$i]) {
-				case '"': $state = '"'; break;
-				case "'": $state = "'"; break;
-				case '(': $parenthesis +=1;break;
-				case ')': $parenthesis -=1;break;
-				case ',': if(!$parenthesis) {
-						$out[] = trim(substr($fields,$start,$i-$start));
-						$start = $i+1;
-					};
-					break;
-				}
-				break;
-			}
-		}
-
-		$out[] = trim(substr($fields, $start));
-		return $out;
-	}
-
-
+}
 }

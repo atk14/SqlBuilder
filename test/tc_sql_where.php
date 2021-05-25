@@ -1,4 +1,6 @@
 <?php
+use \SqlBuilder\SqlWhere;
+
 class TcSqlWhere extends TcBase {
 
 	function test() {

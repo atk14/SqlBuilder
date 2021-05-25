@@ -1,4 +1,5 @@
 <?php
+namespace SqlBuilder {
 /***
  * SQL query with bind arguments usage
  * $sql = new SqlBindQuery('select .... where id = :id', [':id' => $id]);
@@ -7,7 +8,7 @@
  * list($query, $bind) = $sql;
  **/
 
-class SqlBindQuery implements ArrayAccess {
+class SqlBindQuery implements \ArrayAccess {
 
 	function __construct($sql, $bind=[]) {
 		$this->sql = $sql;
@@ -58,4 +59,5 @@ class SqlBindQuery implements ArrayAccess {
 	function offsetUnset($offset) {
 			throw new Exception('Not implemented');
 	}
+}
 }

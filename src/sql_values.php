@@ -1,10 +1,12 @@
 <?php
+namespace SqlBuilder {
+
 /***
  * Generate SQL expresion for table
  *
  * $values = new SqlValues(["id, name"]);
- * $values->add([4,"Jan"]); 
- * $values->add([6,"Petr"]); 
+ * $values->add([4,"Jan"]);
+ * $values->add([6,"Petr"]);
  * $this->dbmole->selectRows("SELECT * FROM (".$values->sql().")q (id,name)", $values->bind()); // "SELECT * FROM (VALUES(4,'Jan'),(6,'Petr'))q (id,name)"
  ***/
 class SqlValues {
@@ -66,4 +68,5 @@ class SqlValues {
 	function bind() {
 		return $this->bind_ar;
 	}
+}
 }

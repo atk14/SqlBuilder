@@ -1,4 +1,6 @@
 <?php
+namespace SqlBuilder {
+
 /***
  * Structured SQL Query. Each SqlTable describes one table.
  *
@@ -488,4 +490,5 @@ class SqlTable {
 			return array_intersect_key($data, array_flip($keys));
 		}
 	}
+}
 }

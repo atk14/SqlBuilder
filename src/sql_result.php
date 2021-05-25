@@ -1,4 +1,6 @@
 <?php
+namespace SqlBuilder {
+
 /**
  * Result of SqlTable - flattenation of the joined tables to one object
  * Usage:
@@ -254,4 +256,5 @@ class SqlResult {
 	function addBind($bind) {
 		$this->bind+=$bind;
 	}
+}
 }

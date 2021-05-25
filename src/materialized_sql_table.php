@@ -1,4 +1,5 @@
 <?php
+namespace SqlBuilder {
 /***
  * SqlTable, that materialized herself if requested for result. This can be faster than
  * repated evaluation of the sql JOIN
@@ -67,4 +68,5 @@ class MaterializedSqlTable {
 		}
 		$this->object=$this->materialized=$this->table->materialize($this->dbmole, $materializeOptions['fields'], $materializeOptions);
 	}
+}
 }

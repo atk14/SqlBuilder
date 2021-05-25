@@ -1,4 +1,6 @@
 <?php
+use \SqlBuilder\SqlBindQuery;
+
 class tc_sql_bind_query extends TcBase {
 
 	function test() {

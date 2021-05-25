@@ -1,4 +1,6 @@
 <?php
+use \SqlBuilder\SqlJoinOrder;
+use \SqlBuilder\SqlResult;
 
 class TcSqlJoinOrder extends TcBase {
 
@@ -26,7 +28,7 @@ class TcSqlJoinOrder extends TcBase {
 		$this->assertEquals(2, $o->fieldsCount());
 		$this->assertEquals(["a","b"], $o->asArray());
 
-		
+
 		$o = new SqlJoinOrder("a, b DESC, c NULLS FIRST");
 		$this->assertTrue($o->isOrdered());
 		$this->assertEquals(["a", "b DESC", "c NULLS FIRST"], $o->asArray());
@@ -34,8 +36,6 @@ class TcSqlJoinOrder extends TcBase {
 		$o = new SqlJoinOrder("a, b ASC, c DESC NULLS LAST");
 		$this->assertEquals("a DESC, b DESC, c ASC NULLS FIRST", $o->reversed()->asString());
 		$this->assertEquals([['a', 'b', 'c'], ['',' ASC',' DESC NULLS LAST']], $o->splitOptions());
-		$this->assertEquals([['a', 'b', 'c'], [' DESC',' DESC',' ASC NULLS FIRST']],
-										    SqlJoinOrder::SplitOptionsFrom('a DESC, b DESC, c ASC NULLS FIRST'));
 
 		$o = new SqlJoinOrder("aaa, b - ASCNULLSFIRST");
 		$this->assertEquals("aaa DESC, b - ASCNULLSFIRST DESC", $o->reversed()->asString());

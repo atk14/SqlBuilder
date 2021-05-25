@@ -1,4 +1,13 @@
 <?php
+namespace SqlBuilder {
+
+/**
+ * Usage:
+ * $w = new SqlWhere();
+ * $w->and('id = 4');
+ * $w->and('root_id = 3');
+ * $dbmole->selectRows("select * from table where " . $w);
+ **/
 
 class BaseSqlWhere {
 	function __construct($where='') {
@@ -68,3 +77,5 @@ class SqlWhere extends BaseSqlWhere {
 }
 
 endif;
+
+}

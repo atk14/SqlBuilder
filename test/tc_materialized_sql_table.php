@@ -1,4 +1,7 @@
 <?php
+use \SqlBuilder\SqlTable;
+use \SqlBuilder\MaterializedSqlTable;
+
 class TcMaterializedSqlTable extends TcBase {
 
 	function test() {

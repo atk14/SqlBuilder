@@ -1,6 +1,8 @@
 <?php
+use \SqlBuilder\SqlValues;
+
 class TcSqlValues extends TcBase {
-	
+
 	function test(){
 		$values = new SqlValues(["id","name"]);
 

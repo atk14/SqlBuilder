@@ -1,4 +1,7 @@
 <?php
+use \SqlBuilder\SqlResult;
+use \SqlBuilder\SqlTable;
+
 class TcSqlResult extends TcBase {
 
 	function assertSqlEquals($a, $b) {
