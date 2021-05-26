@@ -15,4 +15,26 @@ class tc_binded_sql extends TcBase {
 	  $q = new BindedSql('SELECT :num', [':num' => 3]);
 		$this->assertEquals(3, $q->selectInt($dbmole));
 	}
+
+	function test_concat() {
+		$a = new BindedSql('1', ['1' => 'a']);
+		$b = new BindedSql('2', ['2' => 'b']);
+		$out = $a->concat($b);
+		$this->assertTrue($a !== $out);
+		$this->assertTrue($b !== $out);
+		$this->assertEquals('12', $out->sql);
+		$this->assertEquals(['1' => 'a', '2' => 'b'], $out->bind);
+
+		$out = $a->concat('45');
+		$this->assertTrue($a !== $out);
+		$this->assertEquals('145', $out->sql);
+		$this->assertEquals(['1' => 'a'], $out->bind);
+
+		$a->append('45');
+		$this->assertEquals('145', $a->sql);
+		$this->assertEquals(['1' => 'a'], $a->bind);
+		$a->append($b);
+		$this->assertEquals('1452', $a->sql);
+		$this->assertEquals(['1' => 'a', '2' => 'b'], $a->bind);
+	}
 }

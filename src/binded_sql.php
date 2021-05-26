@@ -59,5 +59,23 @@ class BindedSql implements \ArrayAccess {
 	function offsetUnset($offset) {
 			throw new Exception('Not implemented');
 	}
+
+	function concat($other) {
+		if(!is_object($other)) {
+			return new BindedSql($this->sql . $other, $this->bind);
+		} else {
+			return new BindedSql($this->sql . $other->sql, $this->bind + $other->bind);
+		}
+	}
+
+	function append($other) {
+		if(!is_object($other)) {
+			$this->sql.=$other;
+		} else {
+			$this->sql.=$other->sql;
+			$this->bind+=$other->bind;
+		}
+	}
+
 }
 }
