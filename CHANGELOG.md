@@ -3,7 +3,10 @@ Change Log
 
 All notable changes to SqlBuilder will be documented in this file.
 
-## [3.1.0] - 2021-05-25
+## [3.2.0] - 2021-05-26
+- SqlTable accepts where conditions as BindedSql class
+
+## [3.1.0] - 2021-05-26
 - SqlBindQuery renamed to BindedSql. BC BREAK!
 
 ## [3.0.0] - 2021-05-25

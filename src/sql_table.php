@@ -104,11 +104,22 @@ class SqlTable {
 	 */
 	function where($where, $bind_ar = null, $bind_value=null) {
 		if(is_array($where)) {
+			foreach($where as &$w) {
+				if($w instanceof BindedSql) {
+					$this->bind += $w->getBind();
+					$w = $w->getSql();
+				}
+			}
 			$this->where = array_merge($this->where, $where);
 			$this->sattisfiedWhere = array_diff_key($this->sattisfiedWhere, static::FilterNamedWhere($where));
 		} elseif($where) {
 			$this->where[] = $where;
+			if($where instanceof BindedSql) {
+				$this->bind += $where->getBind();
+				$where = $where->getSql();
+			}
 		}
+
 		if($this->pattern) {
 			$this->pattern->where($where);
 		}

@@ -1,5 +1,6 @@
 <?php
 use \SqlBuilder\SqlTable;
+use \SqlBuilder\BindedSql;
 
 class TcSqlTable extends TcBase {
 
@@ -62,6 +63,18 @@ class TcSqlTable extends TcBase {
 		$prices->setActive(false);
 		$this->assertSqlEquals("SELECT * FROM cards WHERE (visible) AND (NOT deleted)",$sql->result()->select());
 		$this->assertSqlEquals("SELECT * FROM cards JOIN (products LEFT JOIN price_items pi ON ((products.id = pi.product_id) AND (not deleted))) ON ((cards.id = products.card_id)) WHERE (visible) AND (NOT deleted)",$sql->result(['active_join' => 'pi'])->select());
+	}
+
+	function test_sql_bind() {
+	  $dbmole = PgMole::GetInstance();
+
+		$sql = new SqlTable("cards");
+		$sql->where(new BindedSql('id=:id', [':id'=>1]));
+		$this->assertSqlEquals("SELECT * FROM cards WHERE (id=1)", $sql->result()->select()->escaped($dbmole));
+
+		$sql = new SqlTable("cards");
+		$sql->where(['visible', new BindedSql('id=:id', [':id'=>1]), new BindedSql('ud=:ud', [':ud'=>2]) ]);
+		$this->assertSqlEquals("SELECT * FROM cards WHERE (visible) AND (id=1) AND (ud=2)", $sql->result()->select()->escaped($dbmole));
 	}
 
 
