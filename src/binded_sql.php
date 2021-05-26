@@ -85,7 +85,14 @@ class BindedSql implements \ArrayAccess {
 			$out = new BindedSql($a);
 			return $out->append($b);
 		}
+	}
 
+	function addBind($bind) {
+		if($bind instanceof BindedSql) {
+			$this->bind+=$bind->bind;
+		} else {
+			$this->bind+=$bind;
+		}
 	}
 
 }

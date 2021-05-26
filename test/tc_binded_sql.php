@@ -55,6 +55,10 @@ class tc_binded_sql extends TcBase {
 		$this->assertEquals('12', $out->sql);
 		$this->assertEquals(['1' => 'a', '2' => 'b'], $out->bind);
 
+		$a->addBind([4=>4]);
+		$this->assertEquals(['1' => 'a', 4 => 4], $a->bind);
+		$a->addBind($b);
+		$this->assertEquals(['1' => 'a', 4 => 4, '2' => 'b'], $a->bind);
 
 	}
 }
