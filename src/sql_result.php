@@ -33,7 +33,7 @@ class SqlResult {
 	}
 
 	function _bindQuery($sql) {
-		return new SqlBindQuery($sql, $this->bind);
+		return new BindedSql($sql, $this->bind);
 	}
 
 	function count($field='*', $options=[]) {
