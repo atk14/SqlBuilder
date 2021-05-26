@@ -3,14 +3,34 @@ Change Log
 
 All notable changes to SqlBuilder will be documented in this file.
 
+## [3.1.0] - 2021-05-25
+- SqlBindQuery renamed to BindedSql. BC BREAK!
+
+## [3.0.0] - 2021-05-25
+
+- Content of the package moved to namespace SqlBuilder. BC BREAK!
+- new class Fieldstils
+
+## [2.3.0] - 2021-05-25
+
+- SqlResult fixies and improvments (tableString method, 'exists' join metod)
+
+## [2.2.0] - 2021-05-25
+
+- MaterializedSqlTable class added
+
+## [2.1.0] - 2021-05-25
+
+- SqlResult returns an instance of SqlBindQuery
+
 ## [2.0.1] - 2021-05-25
 
 - The package atk14/dbmole is a requirement only for the development environment.
 
 ## [2.0] - 2021-05-24
 
-- Class renamed: SqlConditions -> SqlTable BC BREAK!
-- Return value changed: SqlResult->distinctOnSelect BC BREAK!
+- Class renamed: SqlConditions -> SqlTable. BC BREAK!
+- Return value changed: SqlResult->distinctOnSelect. BC BREAK!
 
 ## [1.1] - 2021-05-14
 
