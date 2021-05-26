@@ -61,20 +61,31 @@ class BindedSql implements \ArrayAccess {
 	}
 
 	function concat($other) {
-		if(!is_object($other)) {
-			return new BindedSql($this->sql . $other, $this->bind);
-		} else {
+		if($other instanceof BindedSql) {
 			return new BindedSql($this->sql . $other->sql, $this->bind + $other->bind);
+		} else {
+			return new BindedSql($this->sql . $other, $this->bind);
 		}
 	}
 
 	function append($other) {
-		if(!is_object($other)) {
-			$this->sql.=$other;
-		} else {
+		if($other instanceof BindedSql) {
 			$this->sql.=$other->sql;
 			$this->bind+=$other->bind;
+		} else {
+			$this->sql.=$other;
 		}
+		return $this;
+	}
+
+	static function Concatenate($a, $b) {
+		if($a instanceof BindedSql) {
+			return $a->concat($b);
+		} else {
+			$out = new BindedSql($a);
+			return $out->append($b);
+		}
+
 	}
 
 }

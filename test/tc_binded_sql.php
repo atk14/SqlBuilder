@@ -36,5 +36,25 @@ class tc_binded_sql extends TcBase {
 		$a->append($b);
 		$this->assertEquals('1452', $a->sql);
 		$this->assertEquals(['1' => 'a', '2' => 'b'], $a->bind);
+
+		$a = new BindedSql('1', ['1' => 'a']);
+		$out = BindedSql::Concatenate($a, 45);
+		$this->assertTrue($a !== $out);
+		$this->assertEquals('145', $out->sql);
+		$this->assertEquals(['1' => 'a'], $out->bind);
+
+		$out = BindedSql::Concatenate('', $a);
+		$this->assertTrue($a !== $out);
+		$this->assertEquals('1', $out->sql);
+		$this->assertEquals(['1' => 'a'], $out->bind);
+
+		$out = BindedSql::Concatenate($a, $b);
+		$out = $a->concat($b);
+		$this->assertTrue($a !== $out);
+		$this->assertTrue($b !== $out);
+		$this->assertEquals('12', $out->sql);
+		$this->assertEquals(['1' => 'a', '2' => 'b'], $out->bind);
+
+
 	}
 }
