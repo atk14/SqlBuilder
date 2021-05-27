@@ -2,6 +2,9 @@ Change Log
 ==========
 
 All notable changes to SqlBuilder will be documented in this file.
+## [3.2.2] - 2021-05-27
+- BindedSql->AddBindFrom and fix of BindedSql->addBind
+
 ## [3.2.1] - 2021-05-26
 - methods for modification and concatenating of BindedSqls
 - SqlTable accepts where conditions as BindedSql class

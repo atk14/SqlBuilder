@@ -87,13 +87,17 @@ class BindedSql implements \ArrayAccess {
 		}
 	}
 
-	function addBind($bind) {
+	function addBindFrom($bind) {
 		if($bind instanceof BindedSql) {
-			$this->bind+=$bind->bind;
-		} else {
-			$this->bind+=$bind;
+			$this->addBind($bind->bind);
+		} elseif(!is_string($bind)) {
+			$this->addBind($bind);
 		}
 	}
 
+	function addBind($bind) {
+			$this->bind+=$bind;
+	}
 }
+
 }
