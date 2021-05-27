@@ -98,10 +98,12 @@ class BindedSql implements \ArrayAccess {
 		} elseif(!is_string($bind)) {
 			$this->addBind($bind);
 		}
+		return $this;
 	}
 
 	function addBind($bind) {
 			$this->bind+=$bind;
+			return $this;
 	}
 }
 
