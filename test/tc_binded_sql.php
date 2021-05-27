@@ -67,4 +67,16 @@ class tc_binded_sql extends TcBase {
 		$a->addBindFrom('aaaaa');
 		$this->assertEquals(['1' => 'a', 4 => 4, '2' => 'b'], $a->bind);
 	}
+
+	function test_do() {
+		$dbmole = PgMole::GetInstance();
+		$a=new BindedSql('SELECT 5');
+		$b=new BindedSql('CREATE TEMPORARY TABLE test__xxxx (a integer); DROP TABLE test__xxxx;');
+		$this->assertEquals(5, $a->selectInt($dbmole));
+		$b->doQuery($dbmole);
+		$GLOBALS['dbmole'] = $dbmole;
+		$this->assertEquals(5, $a->selectInt());
+		$b->doQuery();
+	}
+
 }

@@ -2,6 +2,10 @@ Change Log
 ==========
 
 All notable changes to SqlBuilder will be documented in this file.
+## [3.2.3] - 2021-05-27
+- BindedSql->doQuery
+
+All notable changes to SqlBuilder will be documented in this file.
 ## [3.2.2] - 2021-05-27
 - BindedSql->AddBindFrom and fix of BindedSql->addBind
 

@@ -18,9 +18,14 @@ class BindedSql implements \ArrayAccess {
 	function __call($name, $arguments) {
 		$dbmole = key_exists('0', $arguments) && $arguments[0] ? $arguments[0] : $GLOBALS['dbmole'];
 		if(substr($name, 0, 6) !== 'select') {
-			throw new Exception("Unknown method BindedSql::$name");
+			throw new \Exception("Unknown method BindedSql::$name");
 		}
 		return call_user_func([$dbmole, $name], $this->sql, $this->bind);
+	}
+
+	function doQuery($dbmole = null) {
+		if(!$dbmole) { $dbmole = $GLOBALS['dbmole']; }
+		$dbmole->doQuery($this->sql, $this->bind);
 	}
 
 	function escaped($dbmole = null) {
