@@ -26,7 +26,7 @@ class TcSqlValues extends TcBase {
 		$this->assertEquals([":today" => "2019-06-04 17:06:00"],$values->bind());
 
 		$values->add([4,"Jan"]); 
-		$values->add([6,"Petr"]);
+		$values->add(6,"Petr");
 		$this->assertEquals("VALUES (4,:name_0),(6,:name_1)",$values->sql());
 		$this->assertEquals([":name_0" => "Jan", ":name_1" => "Petr", ":today" => "2019-06-04 17:06:00"],$values->bind());
 	}

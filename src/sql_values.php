@@ -33,8 +33,8 @@ class SqlValues {
 
 	function add($values) {
 		if(!is_array($values)) {
-			$values = func_get_args($values);
-		}	
+			$values = func_get_args();
+		}
 		$i=$this->row++;
 		reset($this->fields);
 		$str = [];
