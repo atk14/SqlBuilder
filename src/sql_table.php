@@ -232,13 +232,20 @@ class SqlTable {
 
 	function setOrder($order) {
 		if(is_object($order)) { $order = $order->getOrder(); };
-		$this->setOptionValue('order', $order);
+		$this->setSqlOptionValue('order', $order);
 	}
 
-	function setOptionValue($name, $value) {
+	function setSqlOptionValue($name, $value) {
 		$this->sqlOptions[$name] = $value;
 		if($this->pattern) {
 			$this->pattern->sqlOptions[$name] = $value;
+		}
+	}
+
+	function setOptionValue($name, $value) {
+		$this->options[$name] = $value;
+		if($this->pattern) {
+			$this->pattern->options[$name] = $value;
 		}
 	}
 

@@ -109,4 +109,17 @@ class TcSqlTable extends TcBase {
 		$this->assertEquals(['a', 'b'], $dbmole->selectIntoArray("SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = :name", [':name' => $mat->getSqlTable() ]));
 	}
 
+	function assertSql($sql, $result) {
+		$result = trim(preg_replace("/\s+/"," ", $result));
+		$result = preg_replace("/([()])\s+([()])/",'\1\2', $result);
+		$this->assertEquals($sql, $result);
+	}
+
+	function test_exists() {
+		$sql = new SqlTable('cards');
+		$join = $sql->join('products', 'cards.id = products.card_id');
+		$this->assertSql("SELECT * FROM cards JOIN products ON ((cards.id = products.card_id))", $sql->result()->select());
+		$join->setJoinBy('exists');
+		$this->assertSql("SELECT * FROM cards WHERE EXISTS(SELECT * FROM products WHERE (cards.id = products.card_id))", $sql->result()->select());
+	}
 }
