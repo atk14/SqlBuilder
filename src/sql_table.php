@@ -88,10 +88,11 @@ class SqlTable {
 			$this->sqlTable = $table;
 			$this->name = $table;
 		}
+		return $this;
 	}
 
 	function addCondition($condition) {
-		$this->where($condition[0], $condition[1]);
+		return $this->where($condition[0], $condition[1]);
 	}
 
 	/***
@@ -200,7 +201,6 @@ class SqlTable {
 	 * Creates SQLResult object.
 	 * See class documentation for examples
 	 */
-
 	function result($options = []) {
 		$options = $this->prepareOptions($options);
 		if(!$this->isActive($options)) { return null; };
@@ -234,11 +234,12 @@ class SqlTable {
 		if($this->pattern) {
 			$this->pattern->setSqlOptions($options);
 		}
+		return $this;
 	}
 
 	function setOrder($order) {
 		if(is_object($order)) { $order = $order->getOrder(); };
-		$this->setSqlOptionValue('order', $order);
+		return $this->setSqlOptionValue('order', $order);
 	}
 
 	function setSqlOptionValue($name, $value) {
@@ -246,6 +247,7 @@ class SqlTable {
 		if($this->pattern) {
 			$this->pattern->sqlOptions[$name] = $value;
 		}
+		return $this;
 	}
 
 	function setOptionValue($name, $value) {
@@ -253,6 +255,7 @@ class SqlTable {
 		if($this->pattern) {
 			$this->pattern->options[$name] = $value;
 		}
+		return $this;
 	}
 
 	/* Name of the join - now same as alias of the table */
@@ -280,6 +283,7 @@ class SqlTable {
 
 	function setJoinBy($join) {
 		$this->setOptionValue('join', $join);
+		return $this;
 	}
 
 	/** Set whether the table will be joined to parent table
