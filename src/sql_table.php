@@ -168,7 +168,13 @@ class SqlTable {
 		return $this;
 	}
 
-	function resultWhere($options) {
+	/**
+	 * Return string with WHERE conditions, according to the given options
+	 * - which can disable or limit the conditions that are actually used -
+	 * see 'disable_where', 'not_where', 'named_where_only' and 'add_where'
+	 * options.
+	 **/
+	function resultingWhere($options) {
 		$where = array_diff_key($this->where, $options['disable_where']);
 		foreach(array_intersect_key($where,$options['not_where']) as $k => $v) {
 				$where[$k] = "NOT ($v)";
@@ -202,7 +208,7 @@ class SqlTable {
 			return $options['result_function'][$this->name]($this, $options);
 		}
 
-		$where = $this->resultWhere($options);
+		$where = $this->resultingWhere($options);
 		$sqlOptions = $options['sql_options'] + $this->sqlOptions;
 		$result = new SqlResult($this->table, $where, $this->bind, $sqlOptions);
 
