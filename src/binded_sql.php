@@ -45,10 +45,11 @@ class BindedSql implements \ArrayAccess {
 		return $this->sql;
 	}
 
-	function offsetExists($offset) {
+	function offsetExists($offset):bool {
 		return in_array($offset, [0,1]);
 	}
 
+	#[\ReturnTypeWillChange]
 	function offsetGet($offset) {
 		switch($offset) {
 			case 0: return $this->sql;
@@ -57,11 +58,11 @@ class BindedSql implements \ArrayAccess {
 		}
 	}
 
-	function offsetSet($offset, $value) {
+	function offsetSet($offset, $value):void {
 			throw new Exception('Not implemented');
 	}
 
-	function offsetUnset($offset) {
+	function offsetUnset($offset):void {
 			throw new Exception('Not implemented');
 	}
 
