@@ -72,5 +72,9 @@ class SqlValues {
 	function createTemporaryTableSql($name) {
 		return "CREATE TEMPORARY TABLE $name AS {$this->sql()}";
 	}
+
+	function count() {
+		return count($this->data);
+	}
 }
 }
