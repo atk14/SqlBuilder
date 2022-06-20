@@ -68,5 +68,9 @@ class SqlValues {
 	function bind() {
 		return $this->bind_ar;
 	}
+
+	function createTemporaryTableSql($name) {
+		return "CREATE TEMPORARY TABLE $name AS {$this->sql()}";
+	}
 }
 }
