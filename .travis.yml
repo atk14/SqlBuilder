@@ -1,4 +1,5 @@
 # vim:ts=2:sw=2:et
+os: linux
 
 # Partner Queue Solution, no credits are consumed
 arch: ppc64le
