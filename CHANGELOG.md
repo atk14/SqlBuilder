@@ -2,6 +2,11 @@ Change Log
 ==========
 
 All notable changes to SqlBuilder will be documented in this file.
+
+## [3.2.8] - 2023-03-10
+
+* a26a75a - PHP8.1 issues
+
 ## [3.2.3] - 2021-05-27
 - BindedSql->doQuery
 
