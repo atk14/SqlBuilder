@@ -13,9 +13,27 @@ class SqlValues {
 
 	function __construct($fields, $options=[]) {
 		$options+= [
-			'bind_ar' => []
+			'bind_ar' => [],
+			'types' => null
 		];
-		$this->fields = $fields;
+		if(!is_array($fields)) {
+			$this->fields = [ $fields ];
+		} else {
+			$this->fields = array_values($fields);
+		}
+		if(is_array($options['types'])) {
+			$this->types = array_values($options['types']);
+		} else {
+			$this->types = array_fill(0, count($fields), $options['types']);
+		}
+		foreach($this->fields as $k => &$f) {
+			if($p=strpos($f, '::')) {
+				$this->types[$k]=substr($f,$p+2);
+				$f=substr($f,0,$p-1);
+			}
+		}
+
+		if($options['types'])
 		$this->data = [];
 		$this->bind_ar = $options['bind_ar'];
 		$this->row=0;
@@ -36,19 +54,33 @@ class SqlValues {
 			$values = func_get_args();
 		}
 		$i=$this->row++;
+
 		reset($this->fields);
+		if(!$this->data) {
+			reset($this->types);
+		}
+
 		$str = [];
 		foreach($values as $v) {
 			if($v === null) {
-				$str[] = "null";
+				$s= "null";
 			} elseif(is_int($v) or is_float($v)) {
-				$str[] = $v;
+				$s = $v;
 			} else {
 				$id = ":" . current($this->fields) . "_$i";
 				$this->bind_ar[$id] = $v;
-				$str[] = $id;
+				$s = $id;
 			}
+			if(!$this->data) {
+				$type=current($this->types);
+				if($type!==null) {
+					$s.="::$type";
+				}
+				next($this->types);
+			}
+			$str[] = $s;
 			next($this->fields);
+			continue;
 		}
 		$this->data[] = implode(",", $str);
 	}
@@ -62,6 +94,12 @@ class SqlValues {
 
 	function withSql($tableName) {
 		$fields = implode(",", $this->fields);
+		if($this->data) {
+			$data = $this->sql();
+		} else {
+			$data = implode(',', array_map(function($v) {return $v===null?'NULL':"NULL::$v";}, $this->types));
+			$data = "SELECT $data WHERE false";
+		}
 		return "$tableName($fields) AS ({$this->sql()})";
 	}
 
@@ -70,7 +108,8 @@ class SqlValues {
 	}
 
 	function createTemporaryTableSql($name) {
-		return "CREATE TEMPORARY TABLE $name AS {$this->sql()}";
+		$fields = implode(",", $this->fields);
+		return "CREATE TEMPORARY TABLE $name($fields) AS {$this->sql()}";
 	}
 
 	function count() {
