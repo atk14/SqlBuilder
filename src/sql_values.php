@@ -29,11 +29,9 @@ class SqlValues {
 		foreach($this->fields as $k => &$f) {
 			if($p=strpos($f, '::')) {
 				$this->types[$k]=substr($f,$p+2);
-				$f=substr($f,0,$p-1);
+				$f=substr($f,0,$p);
 			}
 		}
-
-		if($options['types'])
 		$this->data = [];
 		$this->bind_ar = $options['bind_ar'];
 		$this->row=0;
@@ -100,7 +98,7 @@ class SqlValues {
 			$data = implode(',', array_map(function($v) {return $v===null?'NULL':"NULL::$v";}, $this->types));
 			$data = "SELECT $data WHERE false";
 		}
-		return "$tableName($fields) AS ({$this->sql()})";
+		return "$tableName($fields) AS ($data)";
 	}
 
 	function bind() {
@@ -108,8 +106,7 @@ class SqlValues {
 	}
 
 	function createTemporaryTableSql($name) {
-		$fields = implode(",", $this->fields);
-		return "CREATE TEMPORARY TABLE $name($fields) AS {$this->sql()}";
+		return "CREATE TEMPORARY TABLE " . $this->withSql($name);
 	}
 
 	function count() {
