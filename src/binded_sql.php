@@ -45,6 +45,7 @@ class BindedSql implements \ArrayAccess {
 		return $this->sql;
 	}
 
+	#[\ReturnTypeWillChange]
 	function offsetExists($offset):bool {
 		return in_array($offset, [0,1]);
 	}
