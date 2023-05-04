@@ -12,7 +12,7 @@ class TcSqlValues extends TcBase {
 		$this->assertEquals("data(id,name) AS (SELECT NULL,NULL WHERE false)",$values->withSql("data"));
 
 		$values->add([4,"Jan"]);
-		$values->add([6,"Petr"]);
+		$values->add(6,"Petr");
 		$this->assertEquals("VALUES (4,:name_0),(6,:name_1)",$values->sql());
 		$this->assertEquals([":name_0" => "Jan", ":name_1" => "Petr"],$values->bind());
 
@@ -42,7 +42,13 @@ class TcSqlValues extends TcBase {
 		$values->add([1,'x']);
 		$values->add([2,'y']);
 		$this->assertEquals("tt(id,name) AS (VALUES (1::integer,:name_0::integer),(2,:name_1))", $values->withSql('tt'));
+		$this->assertEquals("ARRAY[(1::integer,:name_0::integer),(2,:name_1)]::type[]", $values->sqlArray('type'));
+
 		$values = new SqlValues(["id","name"], ['types' => ['integer', 'varchar']]);
 		$this->assertEquals("tt(id,name) AS (SELECT NULL::integer,NULL::varchar WHERE false)", $values->withSql('tt'));
+		$this->assertEquals("ARRAY[]::type[]", $values->sqlArray('type'));
+		$values = new SqlValues(["id::integer"]);
+		$values->addMore([1,2]);
+		$this->assertEquals("ARRAY[1::integer,2]::integer[]", $values->sqlArray());
 	}
 }

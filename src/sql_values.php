@@ -83,12 +83,40 @@ class SqlValues {
 		$this->data[] = implode(",", $str);
 	}
 
+	function _bracketed() {
+	  return "(".implode('),(', $this->data).")";
+	}
+
 	function sql() {
 		if($this->data) {
-			return "VALUES (".implode('),(', $this->data).")";
+			return "VALUES ". $this->_bracketed();
 		}
 		return "(SELECT)";
 	}
+
+	function sqlArray($type=null) {
+		if($type === null) {
+			if(count($this->types) == 1) {
+				$type = $this->types[0];
+			}
+			if($type === null) {
+				throw Exception("Can not determine the type of the SQL array");
+			}
+		}
+
+		if($this->data) {
+			$data = count($this->fields) === 1 ? implode(",", $this->data) : $this->_bracketed();
+			$out="ARRAY[$data]";
+		} else {
+			$out = "ARRAY[]";
+		}
+
+		if($type) {
+			$out.="::{$type}[]";
+		}
+		return $out;
+	}
+
 
 	function withSql($tableName) {
 		$fields = implode(",", $this->fields);
