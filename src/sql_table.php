@@ -189,6 +189,7 @@ class SqlTable {
 			$options['add_where'] = [];
 		}
 
+		$where = array_filter($where);
 		if($where) {
 			$where = "(" . implode(') AND (', $where) . ")";
 		} else {
