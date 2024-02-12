@@ -10,6 +10,13 @@ namespace SqlBuilder {
  */
 
 class SqlResult {
+
+	var $table;
+	var $join;
+	var $where;
+	var $bind;
+	var $sqlOptions;
+
 	function __construct($table='', $where='', $bind = [], $sqlOptions = []) {
 		$this->table = $table;
 		$this->join = '';

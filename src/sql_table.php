@@ -39,6 +39,19 @@ namespace SqlBuilder {
  **/
 
 class SqlTable {
+
+	var $where;
+	var $sattisfiedWhere;
+	var $join;
+	var $pattern;
+	var $bind;
+	var $sqlOptions;
+	var $active;
+	var $options;
+	var $table;
+	var $sqlTable;
+	var $name;
+
 	function __construct($table=null, $where = [], $bind_ar = [], $options = []) {
 		if($table) {
 			$this->setTable($table);

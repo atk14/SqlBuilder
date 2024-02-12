@@ -11,6 +11,12 @@ namespace SqlBuilder {
  ***/
 class SqlValues {
 
+	var $fields;
+	var $types;
+	var $data;
+	var $bind_ar;
+	var $row;
+
 	function __construct($fields, $options=[]) {
 		$options+= [
 			'bind_ar' => [],
