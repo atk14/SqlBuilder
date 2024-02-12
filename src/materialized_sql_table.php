@@ -1,5 +1,6 @@
 <?php
 namespace SqlBuilder {
+
 /***
  * SqlTable, that materialized herself if requested for result. This can be faster than
  * repated evaluation of the sql JOIN
@@ -13,6 +14,14 @@ namespace SqlBuilder {
  * ....
  **/
 class MaterializedSqlTable {
+
+	var $dbmole;
+	var $object;
+	var $table;
+	var $materialized;
+	var $_options;
+	var $materializeOptions;
+
 	function __construct($sqlTable, $dbmole, $materializeOptions, $options=[]) {
 		$options+= ['materialize' => true ];
 
