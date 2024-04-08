@@ -58,16 +58,16 @@ class BindedSql implements \ArrayAccess {
 		switch($offset) {
 			case 0: return $this->sql;
 			case 1: return $this->bind;
-			default: throw new Exception('No such key in BindedSql');
+			default: throw new \Exception('No such key in BindedSql');
 		}
 	}
 
 	function offsetSet($offset, $value):void {
-			throw new Exception('Not implemented');
+			throw new \Exception('Not implemented');
 	}
 
 	function offsetUnset($offset):void {
-			throw new Exception('Not implemented');
+			throw new \Exception('Not implemented');
 	}
 
 	function concat($other) {

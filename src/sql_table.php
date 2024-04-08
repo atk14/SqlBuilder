@@ -355,7 +355,7 @@ class SqlTable {
 		}
 		$name = $join->getName();
 		if(key_exists($name, $this->join)) {
-			throw new Exception("Join '$name' exists");
+			throw new \Exception("Join '$name' exists");
 		}
 		$this->join[$name] = $join;
 		if($where) {
