@@ -3,6 +3,10 @@ Change Log
 
 All notable changes to SqlBuilder will be documented in this file.
 
+## [4.4.3] - 2024-05-05
+
+* 21d1766 - Fixes
+
 ## [4.4.2] - 2024-02-12
 
 * 237567d - Fixes for PHP8.2
