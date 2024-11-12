@@ -106,5 +106,9 @@ class SqlJoinOrder {
 		}
 	}
 
+	function __toString(){
+		return (string)$this->asString();
+	}
+
 }
 }

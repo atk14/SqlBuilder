@@ -17,14 +17,17 @@ class TcSqlJoinOrder extends TcBase {
 		$o = new SqlJoinOrder("a,b,c");
 		$this->assertEquals("a,b,c",$o->asString());
 		$this->assertEquals(["a","b","c"],$o->asArray());
+		$this->assertEquals("a,b,c",(string)$o);
 
 		$o = new SqlJoinOrder(["d","e","f"]);
 		$this->assertEquals("d, e, f",$o->asString());
 		$this->assertEquals(["d","e","f"],$o->asArray());
+		$this->assertEquals("d, e, f",(string)$o);
 
 		$o = new SqlJoinOrder("a,b,cards.c", "JOIN cards");
 		$this->assertEquals("a,b,cards.c",$o->asString());
 		$this->assertEquals(["a","b","cards.c"],$o->asArray());
+		$this->assertEquals("a,b,cards.c",(string)$o);
 	}
 
 	function test() {
