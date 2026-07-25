@@ -89,6 +89,7 @@ class FieldsUtils {
    **/
 	static function StripField($field) {
 			$base = self::SplitOrderOptionsFromField($field);
+			$field = $base[0];
 			$old = '';
 			while($old !== $field) {
 				$old = $field;

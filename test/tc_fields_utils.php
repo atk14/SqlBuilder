@@ -68,7 +68,7 @@ class TcFieldsUtils extends TcBase {
 			'fce(a,b)' => null,
 			"'a'" => null,
 		] as $data => $result){
-			$this->assertEquals($result, FieldsUtils::StripField($result));
+			$this->assertEquals($result, FieldsUtils::StripField($data));
 		}
 	}
 
