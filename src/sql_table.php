@@ -160,6 +160,7 @@ class SqlTable {
 		}
 		if($where === null) {
 			unset($this->where[$name]);
+			return $this;
 		} else {
 			return $this->where([$name => $where]);
 		}
