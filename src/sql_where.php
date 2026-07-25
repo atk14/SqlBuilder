@@ -11,7 +11,7 @@ namespace SqlBuilder {
 
 class BaseSqlWhere {
 
-	var $where;
+	public $where;
 
 	function __construct($where='') {
 		$this->where = $where;

@@ -15,12 +15,12 @@ namespace SqlBuilder {
  **/
 class MaterializedSqlTable {
 
-	var $dbmole;
-	var $object;
-	var $table;
-	var $materialized;
-	var $_options;
-	var $materializeOptions;
+	public $dbmole;
+	public $object;
+	public $table;
+	public $materialized;
+	public $_options;
+	public $materializeOptions;
 
 	function __construct($sqlTable, $dbmole, $materializeOptions, $options=[]) {
 		$options+= ['materialize' => true ];

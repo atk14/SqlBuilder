@@ -11,11 +11,11 @@ namespace SqlBuilder {
 
 class SqlResult {
 
-	var $table;
-	var $join;
-	var $where;
-	var $bind;
-	var $sqlOptions;
+	public $table;
+	public $join;
+	public $where;
+	public $bind;
+	public $sqlOptions;
 
 	function __construct($table='', $where='', $bind = [], $sqlOptions = []) {
 		$this->table = $table;

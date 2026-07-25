@@ -40,17 +40,17 @@ namespace SqlBuilder {
 
 class SqlTable {
 
-	var $where;
-	var $satisfiedWhere;
-	var $join;
-	var $pattern;
-	var $bind;
-	var $sqlOptions;
-	var $active;
-	var $options;
-	var $table;
-	var $sqlTable;
-	var $name;
+	public $where;
+	public $satisfiedWhere;
+	public $join;
+	public $pattern;
+	public $bind;
+	public $sqlOptions;
+	public $active;
+	public $options;
+	public $table;
+	public $sqlTable;
+	public $name;
 
 	function __get($name) {
 		if($name === 'sattisfiedWhere') {

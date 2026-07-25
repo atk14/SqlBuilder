@@ -13,10 +13,10 @@ namespace SqlBuilder {
 
 class SqlJoinOrder {
 
-	var $join;
-	var $reversed;
-	var $array;
-	var $order;
+	public $join;
+	public $reversed;
+	public $array;
+	public $order;
 
 	static function ToSqlJoinOrder($order) {
 		return $order instanceof SqlJoinOrder ? $order : new SqlJoinOrder($order);

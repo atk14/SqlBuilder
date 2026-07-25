@@ -10,8 +10,8 @@ namespace SqlBuilder {
 
 class BindedSql implements \ArrayAccess {
 
-	var $sql;
-	var $bind;
+	public $sql;
+	public $bind;
 
 	function __construct($sql, $bind=[]) {
 		$this->sql = $sql;
