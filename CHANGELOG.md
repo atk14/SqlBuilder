@@ -3,6 +3,12 @@ Change Log
 
 All notable changes to SqlBuilder will be documented in this file.
 
+## [4.4.5] - 2026-07-25
+
+* 7303545 - Fix typo: rename $sattisfiedWhere to $satisfiedWhere, keep deprecated alias
+* cc3bdb7 - FieldsUtils::StripField() fixed
+* 1999e62 - Fix SqlTable::namedWhere() to return $this when removing a named condition
+
 ## [4.4.4] - 2024-11-12
 
 * 61788ed - Added magic method SqlBuilder\SqlJoinOrder::__toString()
