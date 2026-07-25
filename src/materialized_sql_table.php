@@ -62,7 +62,7 @@ class MaterializedSqlTable {
 		$options += $this->_options;
 		if(!$this->materialized) {
 			if($options['materialize']) {
-				$object = $this->materialize();
+				$this->materialize();
 			}
 		}
 		unset($options['materialize']);
