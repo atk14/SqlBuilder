@@ -1,7 +1,7 @@
 SqlBuilder
 ==========
 
-[![Build Status](https://app.travis-ci.com/atk14/SqlBuilder.svg?branch=master)](https://app.travis-ci.com/atk14/SqlBuilder)
+[![Tests](https://github.com/atk14/SqlBuilder/actions/workflows/tests.yml/badge.svg)](https://github.com/atk14/SqlBuilder/actions/workflows/tests.yml)
 
 Usage
 -----
