@@ -106,7 +106,7 @@ class SqlValues {
 				$type = $this->types[0];
 			}
 			if($type === null) {
-				throw Exception("Can not determine the type of the SQL array");
+				throw new Exception("Can not determine the type of the SQL array");
 			}
 		}
 
