@@ -77,8 +77,8 @@ class FieldsUtils {
    * >> ['a', 'DESC']
 	 ***/
 	static function SplitOrderOptionsFromField($field) {
-			$base = preg_replace('/([^\s])\s+((ASC|DESC)(\s+|$))?(NULLS\s+(FIRST|LAST))?\s*$/i','\1', $field);
-			$order = substr($field,strlen($base));
+			$base = preg_replace('/([^\s])\s+((ASC|DESC)(\s+|$))?(NULLS\s+(FIRST|LAST))?\s*$/i','\1', (string)$field);
+			$order = substr((string)$field,strlen($base));
 			return [$base, $order];
 	}
 
@@ -92,7 +92,7 @@ class FieldsUtils {
 			$old = '';
 			while($old !== $field) {
 				$old = $field;
-				$field = preg_replace('/^\s*[a-z0-9_]*\s*\(\s*(.*)\s*\)\s*$/i', '\1', $field);
+				$field = preg_replace('/^\s*[a-z0-9_]*\s*\(\s*(.*)\s*\)\s*$/i', '\1', (string)$field);
 				$field = preg_replace('/\s*(?:NOT|-)\s*(.*)/','\1', $field);
 			}
 			$field = trim($field);
