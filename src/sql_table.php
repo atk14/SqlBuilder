@@ -41,7 +41,7 @@ namespace SqlBuilder {
 class SqlTable {
 
 	var $where;
-	var $sattisfiedWhere;
+	var $satisfiedWhere;
 	var $join;
 	var $pattern;
 	var $bind;
@@ -52,12 +52,26 @@ class SqlTable {
 	var $sqlTable;
 	var $name;
 
+	function __get($name) {
+		if($name === 'sattisfiedWhere') {
+			trigger_error('Property $sattisfiedWhere is deprecated, use $satisfiedWhere instead.', E_USER_DEPRECATED);
+			return $this->satisfiedWhere;
+		}
+	}
+
+	function __set($name, $value) {
+		if($name === 'sattisfiedWhere') {
+			trigger_error('Property $sattisfiedWhere is deprecated, use $satisfiedWhere instead.', E_USER_DEPRECATED);
+			$this->satisfiedWhere = $value;
+		}
+	}
+
 	function __construct($table=null, $where = [], $bind_ar = [], $options = []) {
 		if($table) {
 			$this->setTable($table);
 		}
 		$this->where = is_array($where)?$where:($where?[$where]:[]);
-		$this->sattisfiedWhere = []; //for the purpose of the join-auto, some joins can be marked as
+		$this->satisfiedWhere = []; //for the purpose of the join-auto, some joins can be marked as
 																 //sattisfied (by keys of this array) these are not considered in the
 																 // decision, whether to join the join or not
 		$this->bind = $bind_ar;
@@ -125,7 +139,7 @@ class SqlTable {
 				}
 			}
 			$this->where = array_merge($this->where, $where);
-			$this->sattisfiedWhere = array_diff_key($this->sattisfiedWhere, static::FilterNamedWhere($where));
+			$this->satisfiedWhere = array_diff_key($this->satisfiedWhere, static::FilterNamedWhere($where));
 		} elseif($where) {
 			$this->where[] = $where;
 			if($where instanceof BindedSql) {
@@ -152,10 +166,10 @@ class SqlTable {
 	 * anonymous do not (they are considered as rules how to join or restrict the table)
 	 */
 	function namedWhere($name, $where) {
-		if(key_exists($name, $this->sattisfiedWhere)) {
-			unset($this->sattisfiedWhere[$name]);
+		if(key_exists($name, $this->satisfiedWhere)) {
+			unset($this->satisfiedWhere[$name]);
 			if($this->pattern) {
-				unset($this->pattern->sattisfiedWhere[$name]);
+				unset($this->pattern->satisfiedWhere[$name]);
 			}
 		}
 		if($where === null) {
@@ -510,7 +524,7 @@ class SqlTable {
 				'inherit' => $options['inherit'],
 				'only_names' =>  $options['copy_joins'],
 			]);
-			$out->sattisfiedWhere+=static::FilterNamedWhere($out->where);
+			$out->satisfiedWhere+=static::FilterNamedWhere($out->where);
 
 			foreach($out->join as $join) {
 				if($join->active !== 'always') {
